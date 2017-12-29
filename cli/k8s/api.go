@@ -7,7 +7,8 @@ import (
 	"os"
 
 	"github.com/runconduit/conduit/cli/shell"
-	"k8s.io/client-go/rest"
+	"k8s.io/client-go/kubernetes/typed/authorization/v1"
+	rest "k8s.io/client-go/rest"
 )
 
 const kubernetesConfigFilePathEnvVariable = "KUBECONFIG"
@@ -20,6 +21,11 @@ type KubernetesApi interface {
 type kubernetesApi struct {
 	config               *rest.Config
 	apiSchemeHostAndPort string
+}
+
+func (k8s *kubernetesApi) canI() error {
+
+	v1.NewForConfig(k8s.config)
 }
 
 func (k8s *kubernetesApi) UrlFor(namespace string, extraPathStartingWithSlash string) (*url.URL, error) {
